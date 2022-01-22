@@ -1,0 +1,277 @@
+using System;
+using System.Collections;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
+
+namespace Collections_Case_Study
+{
+    public class Customer
+    {
+        public string cust_name;
+        public string cust_email;
+        public string cust_shipadd;
+        public string cust_billadd;
+
+        public Customer(string n, string e, string add1, string add2)
+        {
+            cust_name = n;
+            cust_email = e;
+            cust_shipadd = add1;
+            cust_billadd = add2;
+
+            adddetailstofile();
+        }
+        public void ShowCustomer()
+        {
+            Console.WriteLine("Name:" + cust_name);
+            Console.WriteLine("Email:" + cust_email);
+            Console.WriteLine("Shipping Address:" + cust_shipadd);
+            Console.WriteLine("Billing Address:" + cust_billadd);
+
+        }
+        public void adddetailstofile()
+        {
+            string path = "c://filerepo//"+cust_name+".txt";
+            if (!File.Exists(path))
+            {
+                StreamWriter sw = File.AppendText(path);
+                sw.WriteLine("Customer Name:" + cust_name);
+                sw.WriteLine(" Customer Email:" + cust_email);
+                sw.WriteLine(" Customer Shipping Address:" + cust_shipadd);
+                sw.WriteLine(" Customer Billing Address:" + cust_billadd);
+                sw.Flush();
+                sw.Close();
+            }
+        }
+    }
+
+    [Serializable]
+    public class Product
+    {
+        public string prod_name;
+        public float prod_price;
+        public int quantity;
+
+        public Product(string n, float p, int q)
+        {
+            prod_name = n;
+            prod_price = p;
+            quantity = q;
+            addproductstofile(n, p);
+        }
+        public void showProducts()
+        {
+            
+            Console.WriteLine("Product Name:" + prod_name);
+            Console.WriteLine("Product Price:" + prod_price);
+        }
+        public void addproductstofile(string prod_name,float prod_price)
+        {
+            string path = "c://filerepo//products.txt";
+
+                StreamWriter sw = File.AppendText(path);
+                sw.WriteLine("Product Name:" + prod_name + " Product Price:" + prod_price);
+                sw.Flush();
+                sw.Close();
+        }
+
+        public string addtocartfile()
+        {
+            string s = "Product Name:" + prod_name + " Product Price:" + prod_price;
+            return s;
+        }
+    }
+
+    public class Cart
+    {
+        Customer cart_customer;
+        ArrayList cart_products = new ArrayList();
+        public int total_amount;
+        public bool confirmstatus;
+
+
+        public Cart(Customer c, ArrayList a, bool status)
+        {
+            cart_customer = c;
+            cart_products = a;
+            confirmstatus = status;
+
+            for (int i = 0; i < cart_products.Count; i++)
+            {
+                Product p = (Product)cart_products[i];
+                total_amount += (int)p.prod_price * p.quantity;
+            }
+            addcarttofile(c.cust_name);
+        }
+        public void ShowCart()
+        {
+            Console.WriteLine(" Customer Name:" + cart_customer.cust_name);
+            Console.WriteLine(" Customer Email:" + cart_customer.cust_email);
+            Console.WriteLine(" Customer Shipping Address:" + cart_customer.cust_shipadd);
+
+            for (int num = 0; num < cart_products.Count; num++)
+            {
+                Product newproduct = (Product)cart_products[num];
+                newproduct.showProducts();
+            }
+        }
+        public void addcarttofile(string customer_name)
+        {
+            string path = "c://filerepo//" + customer_name + "_cart.txt";
+
+            StreamWriter sw = File.AppendText(path);
+            sw.WriteLine("Cart of Customer:"+cart_customer.cust_name);
+            sw.WriteLine("Customer Email:" + cart_customer.cust_email);
+            sw.WriteLine("Customer Shipping Address:" + cart_customer.cust_shipadd);
+            sw.WriteLine("Customer Products:");
+            for (int num = 0; num < cart_products.Count; num++)
+            {
+                Product newproduct = (Product)cart_products[num];
+                string s= newproduct.addtocartfile();
+                sw.WriteLine(s);
+            }
+            sw.Flush();
+            sw.Close();
+        }
+        public void addordertofile(Cart c)
+        {
+            string path = "c://filerepo//orders.txt";
+            StreamWriter sw3 = File.AppendText(path);
+            sw3.WriteLine("Cart of Customer:" + cart_customer.cust_name);
+            sw3.WriteLine("Customer Email:" + cart_customer.cust_email);
+            sw3.WriteLine("Customer Shipping Address:" + cart_customer.cust_shipadd);
+            sw3.WriteLine("Customer Products:");
+            for (int num = 0; num < cart_products.Count; num++)
+            {
+                Product newproduct = (Product)cart_products[num];
+                string s = newproduct.addtocartfile();
+                sw3.WriteLine(s);
+            }
+            sw3.Flush();
+            sw3.Close();
+        }
+    }
+
+    public class Order
+    {
+        public ArrayList orders = new ArrayList();
+
+        public void addorder(Cart c)
+        {
+            orders.Add(c);
+            c.ShowCart();
+            c.addordertofile(c);
+        }
+    }
+
+    public class Container
+    {
+        public void showproductsfromfile()
+        {
+            string path = "c://filerepo//products.txt";
+
+            string[] lines = File.ReadAllLines(path);
+            foreach (string s in lines)
+            {
+                Console.WriteLine(s);
+            }
+        }
+        public void showcustomers(string name)
+        {
+            string path = "c://filerepo//"+name+".txt";
+            string[] lines = File.ReadAllLines(path);
+            foreach (string s in lines)
+            {
+                Console.WriteLine(s);
+            }
+        }
+        public void showcartbyname(string name)
+        {
+            string path = "c://filerepo//" + name + "_cart.txt";
+            string[] lines = File.ReadAllLines(path);
+            foreach (string s in lines)
+            {
+                Console.WriteLine(s);
+            }
+        }
+
+        public void showordersfromfile()
+        {
+            string path = "c://filerepo//orders.txt";
+            string[] lines = File.ReadAllLines(path);
+            foreach (string s in lines)
+            {
+                Console.WriteLine(s);
+            }
+        }
+    }
+
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Customer customer1 = new Customer("Anant", "anant@gmail.com", "New Delhi", "New Delhi");
+            Customer customer2 = new Customer("Rishab", "rishab@gmail.com", "Varanasi", "varanasi");
+
+            Product product1 = new Product("Cornflakes", 20, 10);
+            Product product2 = new Product("Tea", 200, 5);
+            Product product3 = new Product("Apple", 150, 10);
+            Product product4 = new Product("Cofee", 120, 8);
+
+            ArrayList order1 = new ArrayList();
+            order1.Add(product1);
+            order1.Add(product3);
+
+            int confirm_order = 0;
+
+            Console.WriteLine("Confirm the order?(1 for yes and 2 for no):");
+            confirm_order = Convert.ToInt32(Console.ReadLine());
+
+            Order mainorder = new Order();
+
+            if (confirm_order == 1)
+            {
+                Cart cart = new Cart(customer1, order1, true);
+                mainorder.addorder(cart);
+            }
+            else
+            {
+                Cart cart = new Cart(customer1, order1, false);
+            }
+            Console.WriteLine(mainorder.ToString());
+
+            //Printing Details
+            Container container = new Container();
+            int ch = 0;
+            Console.WriteLine("\n\n\n\nEnter 1 to show all the products:\n2 for Showing customers\n3 for showing customer cart\n4 for orders\n5 for all products catalogue\n6 for exit");
+            ch=Convert.ToInt32(Console.ReadLine());
+            while(ch<6)
+            {
+                if (ch == 1)
+                    container.showproductsfromfile();
+                if (ch == 2)
+                    container.showcustomers("Anant");
+                if (ch == 3)
+                {
+                    Console.WriteLine("Enter name of customer to show the cart for:");
+                    string name = Console.ReadLine();
+                    container.showcartbyname(name);
+                }
+                if (ch == 4)
+                {
+                    Console.WriteLine("Orders:");
+                    container.showordersfromfile();
+                }
+                if (ch == 5)
+                {
+                    Console.WriteLine("Products:");
+                    container.showproductsfromfile();
+                }
+                Console.WriteLine("\n\n\n\nEnter 1 to show all the products:\n2 for Showing customers\n3 for showing customer cart\n4 for orders\n5 for all products catalogue\n6 for exit");
+                ch = Convert.ToInt32(Console.ReadLine());
+
+            }
+        }
+    }
+}
