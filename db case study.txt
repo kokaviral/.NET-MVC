@@ -1,0 +1,81 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.SqlClient;
+using System.Data;
+
+namespace _24_jan_db
+{
+    public class DataBaseClass
+    {
+        public DataBaseClass(SqlConnection conn)
+        {
+            this.conn = conn;
+        }
+        SqlConnection conn;
+        SqlCommand cmd;
+
+        public void tableoperation(string query)
+        {
+            if (this.conn.State == ConnectionState.Open)
+            {
+                this.cmd = new SqlCommand(query, this.conn);
+                int i = this.cmd.ExecuteNonQuery();
+                Console.WriteLine("Operation Successful");
+            }
+        }
+        public void showtable(string s)
+        {
+            string query = s;
+            if (this.conn.State == ConnectionState.Open)
+            {
+                this.cmd = new SqlCommand(query, this.conn);
+                SqlDataReader reader = this.cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Console.WriteLine("Customer Id: {0} Customer Name:{1} Customer Address:{2}",reader[0],reader[1],reader[2]);
+                }
+            }
+
+        }
+    }
+    internal class Program
+    {
+
+        static void Main(string[] args)
+        {
+                SqlConnection conn = new SqlConnection(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\sriav\Documents\SampleDB.mdf; Integrated Security = True; Connect Timeout = 30");
+                Console.WriteLine("Connection Made......");
+                conn.Open();
+                DataBaseClass db = new DataBaseClass(conn);
+                string query = "create table customer(customer_id int primary key,customer_name varchar(20), address varchar(100))";
+
+            try
+            {
+                db.tableoperation(query);
+                db.tableoperation("insert into customer values(1,'Jason Rough','23 Old Street')");
+                db.tableoperation("insert into customer values(2,'William Right','55 Baker Street')");
+                db.tableoperation("insert into customer values(3,'Edgar RIce Brough','93 Walker Street')");
+
+                db.showtable("select * from customer");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            conn.Close();
+
+
+            //SqlCommand cmd = new SqlCommand(query, conn);
+            //SqlDataReader reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    Console.WriteLine("Item id:{0} Item Name:{1} Item Price:{2} Item Quantity:{3}", reader[0], reader[1], reader[2], reader[3]);
+            //}
+        }
+    }
+}
