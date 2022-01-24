@@ -1,0 +1,63 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+
+namespace _22_Jan
+{
+    [Serializable]
+    public class Employee
+    {
+        string emp_name;
+        string dept;
+
+        public string EmployeeName
+        {
+            get { return emp_name; }
+            set { emp_name = value; }
+        }
+        public string Dept
+        {
+            get { return dept; }
+            set { dept = value; }
+        }
+        
+    }
+
+
+
+    internal class Program
+    {
+        public static void WriteToFile(Employee e)
+        {
+            Stream savefilestream = File.Create("c://filerepo//" + e.EmployeeName);
+            BinaryFormatter serializable = new BinaryFormatter();
+            serializable.Serialize(savefilestream, e);
+            savefilestream.Close();
+        }
+        public static Employee ReadFromFile(string filename)
+        {
+            string location = "c://filerepo//" + filename;
+            if (File.Exists(location))
+            {
+                Console.WriteLine("Reading from saved file.....");
+                Stream openfilestream = File.OpenRead(location);
+                BinaryFormatter deserialize = new BinaryFormatter();
+                Employee emp = (Employee)deserialize.Deserialize(openfilestream);
+                return emp;
+            }
+            else
+                return null;
+        }
+        static void Main(string[] args)
+        {
+            Employee emp = new Employee();
+            emp.EmployeeName = "Aviral";
+            emp.Dept = "Accounts";
+            //WriteToFile(emp);
+            Employee emp2 = ReadFromFile("Aviral");
+            Console.WriteLine(emp2.EmployeeName);
+            Console.WriteLine(emp2.Dept);
+        }
+    }
+}

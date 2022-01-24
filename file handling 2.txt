@@ -1,0 +1,47 @@
+using System;
+using System.IO;
+using System.Linq;
+
+namespace _22_Jan
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int choice;
+            while (true)
+            {
+                Console.WriteLine("Press 1 to check file existence\n2 for copying file\n3 to rename");
+                choice = Convert.ToInt32(Console.ReadLine());
+                switch (choice)
+                {
+                    case 1:
+                        Console.WriteLine("Path:");
+                        string path = Console.ReadLine();
+                        if (File.Exists(path))
+                            Console.WriteLine("Exists");
+                        else
+                            Console.WriteLine("No such file");
+                        break;
+                    case 2:
+                        Console.WriteLine("source file path:");
+                        string s = Console.ReadLine();
+                        Console.WriteLine("destination file path:");
+                        string d= Console.ReadLine();
+                        File.Move(s, d);
+                        break;
+                    case 3:
+                        Console.WriteLine("Path:");
+                        string f = Console.ReadLine();
+                        Console.WriteLine("New name of file:");
+                        string new_name = Console.ReadLine();
+                        File.Move(f, new_name, true);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        }
+    }
+}

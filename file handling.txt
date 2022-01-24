@@ -1,0 +1,44 @@
+using System;
+using System.IO;
+using System.Linq;
+
+namespace _22_Jan
+{
+    public class Employee
+    {
+        public string Name;
+        public string email;
+        public int age;
+
+        public void GetDetails()
+        {
+            Console.WriteLine("Name:");
+            this.Name = Console.ReadLine();
+
+            Console.WriteLine("Email:");
+            this.email = Console.ReadLine();    
+
+            Console.WriteLine("Age:");
+            this.age = Convert.ToInt32(Console.ReadLine());
+        }
+        public void Addtofile()
+        {
+             string path = "c:\\filerepo\\myfile.txt";
+
+            StreamWriter sw = new StreamWriter(path);
+            sw.WriteLine("Name:" + Name + "Email:" + "age:" + age);
+            sw.Flush();
+            sw.Close();
+        }
+    }
+
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Employee emp = new Employee();
+            emp.GetDetails();
+            emp.Addtofile();
+        }
+    }
+}
