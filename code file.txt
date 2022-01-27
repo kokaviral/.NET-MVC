@@ -1,0 +1,24 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace _27jan_testing
+{
+    public class Calculator
+    {
+        public int calcinterest(int p, int r, int t)
+        {
+            int interest = p * r * t;
+            interest = interest / 100;
+            return interest;
+        }
+
+        public int discount(int amount, int disc)
+        {
+            return amount - disc;
+        }
+    }
+}
+

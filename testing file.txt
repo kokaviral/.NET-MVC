@@ -1,0 +1,36 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using _27jan_testing;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace _27jan_testing.Tests
+{
+    [TestClass()]
+    public class CalculatorTests
+    {
+        [TestMethod()]
+        public void calcinterestTest()
+        {
+            Calculator cal= new Calculator();
+
+            int expected = 50;
+            int val = cal.calcinterest(100, 5, 10);
+
+            Assert.AreEqual(expected,val);
+        }
+
+        [TestMethod()]
+        public void discountTest()
+        {
+            Calculator cal = new Calculator();
+
+            int expected = 90;
+            int val = cal.discount(100,10);
+
+            Assert.AreEqual(expected, val);
+        }
+    }
+}
